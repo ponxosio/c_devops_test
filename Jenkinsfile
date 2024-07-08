@@ -43,6 +43,17 @@ pipeline {
             }
         }
 
+        stage('Test') {
+            steps {
+                script {
+                    dir('build') {
+                        // Run tests
+                        sh 'ctest --verbose'
+                    }
+                }
+            }
+        }
+
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('SonarCloud') {
@@ -71,17 +82,6 @@ pipeline {
                         if (qg.status != 'OK') {
                             error "Pipeline aborted due to quality gate failure: ${qg.status}"
                         }
-                    }
-                }
-            }
-        }
-
-        stage('Test') {
-            steps {
-                script {
-                    dir('build') {
-                        // Run tests
-                        sh 'ctest --verbose'
                     }
                 }
             }
